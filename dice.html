@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style/dice.css" />
+
+  <title>Custom Dice Roller</title>
+
+</head>
+<body>
+
+  <h1>🎲 Custom Dice Roller</h1>
+
+  <form id="diceForm">
+    <!-- Number of Sides -->
+    <label for="sides">Select number of sides (1–100):</label>
+    <input type="number" id="sides" name="sides" min="1" max="100" value="6" required />
+
+    <!-- Step -->
+    <label for="step">Select step/increment (e.g., 1, 2, 5):</label>
+    <input type="number" id="step" name="step" min="1" value="1" required />
+
+    <!-- Roll Button -->
+    <button type="submit">Roll the Dice</button>
+  </form>
+
+  <!-- Display Result -->
+  <div class="result" id="result">🎲 Your roll will appear here</div>
+
+  <!-- Dice animation placeholder using emoji -->
+<div id="dice-animation" class="dice-spinner" style="display: none;">🎲</div>
+
+
+  <script src="script/dice.js"></script>
+
+</body>
+</html>

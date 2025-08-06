@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music & Slideshow</title>
+  <link rel="stylesheet" href="style/music.css" />
+</head>
+<body>
+  <!-- Slideshow -->
+  <div class="container">
+    <div class="slideshow">
+      <img id="slideImage" src="images/IMG24.webp" alt="Slideshow" />
+    </div>
+
+    <!-- Controls for YouTube Music -->
+    <div class="controls">
+      <button id="playMusic">▶ Play Music</button>
+      <button id="pauseMusic">⏸ Pause Music</button>
+    </div>
+  </div>
+
+  <!-- Hidden YouTube IFrame -->
+  <div class="youtube-player">
+    <div id="ytPlayer"></div>
+  </div>
+
+  <!-- YouTube API and your script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script/music.js"></script>
+</body>
+</html>
+
+
