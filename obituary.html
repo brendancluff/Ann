@@ -10,16 +10,17 @@
 </head>
 
 <body>
-<!-- Place this inside <body>, ideally near the top -->
-<audio autoplay loop>
-  <source src="audio/rainbow.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
 
     <header>
         <h1><span class="title-border">In Loving Memory</span></h1>
+        <button id="playAudio">Play Music</button>
     </header>
 
+    <!-- Audio element -->
+    <audio id="memorialAudio" loop>
+        <source src="audio/rainbow.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <main>
         <!-- Obituary Section -->
@@ -28,9 +29,8 @@
             <p class="dates">September 11, 1944 – August 7, 2025</p>
             <p class="message">
                 With deep sadness, we announce the passing of our beloved mother, grandmother, great-grandmother and
-                friend. She lived a
-                life filled with grace, warmth, and compassion, touching the hearts of everyone she met. She will be
-                dearly missed and lovingly remembered by all who knew her.
+                friend. She lived a life filled with grace, warmth, and compassion, touching the hearts of everyone she
+                met. She will be dearly missed and lovingly remembered by all who knew her.
             </p>
         </section>
 
@@ -38,7 +38,7 @@
         <section class="funeral-details">
             <h3>Memorial Service</h3>
             <p><strong>Date:</strong> Details To Come</p>
-            <p><strong>Time:</strong>Details To Come</p>
+            <p><strong>Time:</strong> Details To Come</p>
             <p><strong>Location:</strong> Arizona</p>
         </section>
 
@@ -53,10 +53,10 @@
             <div class="slides fade">
                 <img src="images/new.webp" alt="John gardening">
             </div>
-             <div class="slides fade">
+            <div class="slides fade">
                 <img src="images/king.webp" alt="John gardening">
             </div>
-             <div class="slides fade">
+            <div class="slides fade">
                 <img src="images/young.webp" alt="John gardening">
             </div>
 
@@ -65,6 +65,8 @@
                 <span class="dot" onclick="currentSlide(1)"></span>
                 <span class="dot" onclick="currentSlide(2)"></span>
                 <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
             </div>
         </section>
     </main>
@@ -72,6 +74,7 @@
     <footer>
         <p>&copy; 2025 The Cluff Family</p>
     </footer>
+
 </body>
 
 </html>

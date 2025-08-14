@@ -1,3 +1,4 @@
+/* ---------- Base Styles ---------- */
 body {
   font-family: 'Georgia', serif;
   margin: 0;
@@ -7,19 +8,41 @@ body {
 }
 
 header {
-  background-color:rgb(142, 147, 246);
+  background-color: rgb(142, 147, 246);
   color: white;
   padding: 1rem;
 }
+
 .title-border {
-  border: 1px solid black;       /* Thin black border */
-  padding: 0.25rem 0.5rem;       /* Space around text */
-  display: inline-block;         /* Keeps border snug to text */
-  border-radius: 4px;            /* Slightly rounded corners (optional) */
+  border: 2px solid black;  /* full box around text */
+  padding: 0.5rem 1rem;     /* space inside the box */
+  display: inline-block;    /* keeps box snug to text */
+  border-radius: 6px;       /* optional: rounded corners */
+  background-color: white;  /* optional: fill inside the box */
+  color: black;             /* text color */
+  font-weight: bold;        /* optional: make title stand out */
 }
+
 
 header h1 {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+#playAudio {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  background-color: white;
+  color: rgb(142, 147, 246);
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#playAudio:hover {
+  background-color: rgb(200, 200, 255);
 }
 
 main {
@@ -38,21 +61,20 @@ main {
   font-style: italic;
   color: #555;
 }
- .message {
+
+.message {
   font-size: 1.5rem;
   line-height: 1.6;
-  /* background-color: rgb(142, 147, 246); */
-  border: 1px solid black; /* Thin black border */
-  padding: 0.5rem; /* Optional: adds space inside the border */
+  border: 1px solid black;
+  padding: 0.5rem;
 }
-
 
 .funeral-details {
   font-size: 1.3rem;
   background-color: #eee;
   padding: 1rem;
   border-radius: 8px;
-  border: 1px solid black; /* Thin black border */
+  border: 1px solid black;
   margin-bottom: 2rem;
 }
 
@@ -106,7 +128,6 @@ footer {
   .message {
     font-size: 1rem;
   }
-
   .funeral-details {
     font-size: 0.95rem;
   }
@@ -117,20 +138,16 @@ footer {
   body {
     text-align: left;
   }
-
   header, footer {
     text-align: center;
   }
-
   .message {
     font-size: 1rem;
     line-height: 1.5;
   }
-
   .funeral-details {
     padding: 0.8rem;
   }
-
   .dot {
     height: 10px;
     width: 10px;
