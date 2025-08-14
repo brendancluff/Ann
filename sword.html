@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sword Blade Number Picker</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 2rem;
+    background-color: #f4f4f4;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+  }
+
+  .sword {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  /* Hilt */
+  .hilt {
+    width: 300px;
+    height: 60px;
+    background-color: saddlebrown;
+    border: 2px solid #333;
+    border-radius: 5px;
+  }
+
+  /* Guard */
+  .guard {
+    width: 20px;
+    height: 150px;
+    background-color: gold;
+    border: 2px solid #333;
+    margin: 0 5px;
+    border-radius: 5px;
+  }
+
+  /* Blade */
+  .blade {
+    display: flex;
+    gap: 5px;
+    background: linear-gradient(to right, #ccc, #eee, #ccc);
+    border: 2px solid #333;
+    padding: 10px;
+    border-radius: 4px 0 0 4px; /* round corners left side */
+    align-items: center;
+    position: relative;
+  }
+
+  .number {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    transition: background-color 0.2s;
+  }
+
+  .highlight {
+    background-color: gold;
+    font-weight: bold;
+  }
+
+  /* Triangle tip at end of blade */
+/* .tip {
+  width: 0;
+  height: 0;
+  border-top: 35px solid transparent;     
+  border-bottom: 35px solid transparent; 
+  border-left: 25px solid #ccc;            
+  margin-left: 1px;
+} */
+</style>
+</head>
+<body>
+
+<h1>Random Sword Blade Number Picker</h1>
+
+<div class="sword">
+  <div class="hilt"></div>
+  <div class="guard"></div>
+  <div class="blade" id="numbers"></div>
+  <!-- <div class="tip"></div> -->
+</div>
+
+<button id="pickBtn">Pick Number</button>
+
+<script>
+  const numbersContainer = document.getElementById('numbers');
+  const pickBtn = document.getElementById('pickBtn');
+  let numbers = [];
+
+  // Create tip element
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  numbersContainer.appendChild(tip);
+
+  // Create numbers 1-20 along the blade, inserted before tip
+  for (let i = 1; i <= 20; i++) {
+    const numDiv = document.createElement('div');
+    numDiv.className = 'number';
+    numDiv.textContent = i;
+    numbersContainer.insertBefore(numDiv, tip);
+    numbers.push(numDiv);
+  }
+
+  pickBtn.addEventListener('click', () => {
+    const secretNumber = Math.floor(Math.random() * 20) + 1;
+    let index = 0;
+    let delay = 30;         // fast start
+    const slowdownPoint = 200;  // point to start slowing
+
+    function highlightNext() {
+      numbers.forEach(num => num.classList.remove('highlight'));
+      numbers[index].classList.add('highlight');
+
+      if (delay > 400 && index + 1 === secretNumber) return;
+
+      index = (index + 1) % numbers.length;
+
+      if (delay < slowdownPoint) {
+        delay += 5;   // gradual slow increase
+      } else {
+        delay += 15;  // sharper slowdown near the end
+      }
+
+      setTimeout(highlightNext, delay);
+    }
+
+    highlightNext();
+  });
+</script>
+
+</body>
+</html>
+

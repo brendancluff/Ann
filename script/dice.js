@@ -3,7 +3,7 @@ const form = document.getElementById('diceForm');
 const resultDisplay = document.getElementById('result');
 const sidesInput = document.getElementById('sides');
 const stepInput = document.getElementById('step');
-const spinner = document.getElementById('dice-animation');
+const diceAnimation = document.getElementById('dice-animation');
 
 // Roll history
 let rollHistory = [];
@@ -28,18 +28,20 @@ form.addEventListener('submit', function (e) {
     possibleResults.push(i);
   }
 
-  const randomIndex = Math.floor(Math.random() * possibleResults.length);
-  const roll = possibleResults[randomIndex];
-
-  // Show spinner and "Rolling..." message
-  resultDisplay.textContent = '🎲 Rolling...';
-  spinner.style.display = 'block';
+  // Show spinner animation and hide result
+  resultDisplay.style.display = 'none';
+  diceAnimation.style.display = 'block';
 
   setTimeout(() => {
-    spinner.style.display = 'none';
+    diceAnimation.style.display = 'none';
+
+    const randomIndex = Math.floor(Math.random() * possibleResults.length);
+    const roll = possibleResults[randomIndex];
+
     resultDisplay.textContent = `🎲 You rolled: ${roll}`;
+    resultDisplay.style.display = 'block';
     updateHistory(roll);
-  }, 1000); // 1 second
+  }, 2000); // Show spinner for 2 seconds
 });
 
 // Validate settings and update message
@@ -89,3 +91,5 @@ function updateHistory(roll) {
 
   history.textContent = '🕘 Last rolls: ' + rollHistory.join(', ');
 }
+
+
