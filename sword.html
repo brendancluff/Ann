@@ -1,147 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sword Blade Number Picker</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 2rem;
-    background-color: #f4f4f4;
-  }
-
-  h1 {
-    margin-bottom: 20px;
-  }
-
-  .sword {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px auto;
-  }
-
-  /* Hilt */
-  .hilt {
-    width: 300px;
-    height: 60px;
-    background-color: saddlebrown;
-    border: 2px solid #333;
-    border-radius: 5px;
-  }
-
-  /* Guard */
-  .guard {
-    width: 20px;
-    height: 150px;
-    background-color: gold;
-    border: 2px solid #333;
-    margin: 0 5px;
-    border-radius: 5px;
-  }
-
-  /* Blade */
-  .blade {
-    display: flex;
-    gap: 5px;
-    background: linear-gradient(to right, #ccc, #eee, #ccc);
-    border: 2px solid #333;
-    padding: 10px;
-    border-radius: 4px 0 0 4px; /* round corners left side */
-    align-items: center;
-    position: relative;
-  }
-
-  .number {
-    width: 50px;
-    height: 50px;
-    background-color: rgba(255, 255, 255, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #333;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    transition: background-color 0.2s;
-  }
-
-  .highlight {
-    background-color: gold;
-    font-weight: bold;
-  }
-
-  /* Triangle tip at end of blade */
-/* .tip {
-  width: 0;
-  height: 0;
-  border-top: 35px solid transparent;     
-  border-bottom: 35px solid transparent; 
-  border-left: 25px solid #ccc;            
-  margin-left: 1px;
-} */
-</style>
-</head>
-<body>
-
-<h1>Random Sword Blade Number Picker</h1>
-
-<div class="sword">
-  <div class="hilt"></div>
-  <div class="guard"></div>
-  <div class="blade" id="numbers"></div>
-  <!-- <div class="tip"></div> -->
-</div>
-
-<button id="pickBtn">Pick Number</button>
-
-<script>
-  const numbersContainer = document.getElementById('numbers');
-  const pickBtn = document.getElementById('pickBtn');
-  let numbers = [];
-
-  // Create tip element
-  const tip = document.createElement('div');
-  tip.className = 'tip';
-  numbersContainer.appendChild(tip);
-
-  // Create numbers 1-20 along the blade, inserted before tip
-  for (let i = 1; i <= 20; i++) {
-    const numDiv = document.createElement('div');
-    numDiv.className = 'number';
-    numDiv.textContent = i;
-    numbersContainer.insertBefore(numDiv, tip);
-    numbers.push(numDiv);
-  }
-
-  pickBtn.addEventListener('click', () => {
-    const secretNumber = Math.floor(Math.random() * 20) + 1;
-    let index = 0;
-    let delay = 30;         // fast start
-    const slowdownPoint = 200;  // point to start slowing
-
-    function highlightNext() {
-      numbers.forEach(num => num.classList.remove('highlight'));
-      numbers[index].classList.add('highlight');
-
-      if (delay > 400 && index + 1 === secretNumber) return;
-
-      index = (index + 1) % numbers.length;
-
-      if (delay < slowdownPoint) {
-        delay += 5;   // gradual slow increase
-      } else {
-        delay += 15;  // sharper slowdown near the end
-      }
-
-      setTimeout(highlightNext, delay);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sword Number Selector</title>
+  <style>
+    body {
+      background-color: #222;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
     }
 
-    highlightNext();
-  });
-</script>
+    .sword-wrapper {
+      position: relative;
+      display: inline-block;
+    }
 
+    .result-front {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(24px, 6vw, 48px); /* scales with screen */
+      font-weight: bold;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      z-index: 5;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      text-align: center;
+    }
+
+    .sword-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .tip {
+      width: 0;
+      height: 0;
+      border-left: 40px solid transparent;
+      border-right: 40px solid transparent;
+      border-bottom: 40px solid silver;
+    }
+
+    .sword {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(to bottom, #bbb, #777);
+      border-left: 2px solid silver;
+      border-right: 2px solid silver;
+      padding: 5px 0;
+      width: 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .number {
+      width: 40px;
+      height: 30px;
+      margin: 2px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .number.active {
+      background: gold;
+      color: black;
+      font-weight: bold;
+      box-shadow: 0 0 10px gold;
+    }
+
+    .guard {
+      width: 140px;
+      height: 10px;
+      background: goldenrod;
+      border: 2px solid #b8860b;
+    }
+
+    .handle {
+      width: 30px;
+      height: 100px;
+      background: #4b3621;
+      border: 2px solid #2b1d12;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background: gold;
+      font-weight: bold;
+    }
+
+    #recentRolls {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      width: 200px;
+      text-align: center;
+    }
+
+    #recentRolls h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: gold;
+    }
+
+    #recentList {
+      font-size: 16px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 600px) {
+      .tip {
+        border-left: 25px solid transparent;
+        border-right: 25px solid transparent;
+        border-bottom: 25px solid silver;
+      }
+
+      .sword {
+        width: 60px;
+      }
+
+      .number {
+        width: 30px;
+        height: 24px;
+        font-size: 14px;
+      }
+
+      .guard {
+        width: 100px;
+      }
+
+      .handle {
+        width: 20px;
+        height: 70px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Sword Selector</h1>
+
+  <div class="sword-wrapper">
+    <div class="result-front" id="resultMessageFront"></div>
+    <div class="sword-container">
+      <div class="tip"></div>
+      <div class="sword" id="sword"></div>
+      <div class="guard"></div>
+      <div class="handle"></div>
+    </div>
+  </div>
+
+  <button id="spinButton">Spin!</button>
+
+  <div id="recentRolls">
+    <h2>Recent Rolls</h2>
+    <div id="recentList">None yet</div>
+  </div>
+
+  <script>
+    const swordEl = document.getElementById("sword");
+    const spinButton = document.getElementById("spinButton");
+    const recentListEl = document.getElementById("recentList");
+    const resultMessageFront = document.getElementById("resultMessageFront");
+
+    // Create 20 numbers
+    for (let i = 1; i <= 20; i++) {
+      const numEl = document.createElement("div");
+      numEl.classList.add("number");
+      numEl.textContent = i;
+      swordEl.appendChild(numEl);
+    }
+
+    const numbers = document.querySelectorAll(".number");
+    let currentIndex = 0;
+    let spinning = false;
+    let recentRolls = [];
+
+    // Highlight first number
+    numbers[0].classList.add("active");
+
+    function updateRecentRolls(newRoll) {
+      recentRolls.unshift(newRoll);
+      if (recentRolls.length > 5) {
+        recentRolls.pop();
+      }
+      recentListEl.textContent = recentRolls.join(", ");
+    }
+
+    function updateResultMessage(value) {
+      let message = "";
+      let color = "";
+
+      if (value <= 5) {
+        message = "HaHa, You Lose";
+        color = "red";
+      } else if (value <= 10) {
+        message = "Not Bad";
+        color = "orange";
+      } else if (value <= 16) {
+        message = "Maybe";
+        color = "lightblue";
+      } else {
+        message = "You Win";
+        color = "limegreen";
+      }
+
+      resultMessageFront.textContent = message;
+      resultMessageFront.style.color = color;
+      resultMessageFront.style.opacity = 1;
+    }
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      resultMessageFront.style.opacity = 0; // hide while spinning
+
+      const totalSteps = Math.floor(Math.random() * 40) + 40;
+      let step = 0;
+
+      function spinStep() {
+        numbers[currentIndex].classList.remove("active");
+        currentIndex = (currentIndex + 1) % numbers.length;
+        numbers[currentIndex].classList.add("active");
+
+        step++;
+        if (step < totalSteps) {
+          const progress = step / totalSteps;
+          const speed = 50 + Math.pow(progress, 3) * 300;
+          setTimeout(spinStep, speed);
+        } else {
+          spinning = false;
+          const landedNumber = parseInt(numbers[currentIndex].textContent);
+          updateRecentRolls(landedNumber);
+          updateResultMessage(landedNumber);
+        }
+      }
+
+      spinStep();
+    }
+
+    spinButton.addEventListener("click", spin);
+  </script>
 </body>
-</html>
 
+</html>
