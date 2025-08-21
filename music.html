@@ -1,34 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Music & Slideshow</title>
-  <link rel="stylesheet" href="style/music.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermaid Fantasy Slideshow</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 20px;
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: auto;  /* maintains full image height */
+      max-height: 85vh;  /* ensures it doesn’t exceed viewport */
+      object-fit: contain; /* shows full image without cropping */
+      background-color: #111;  /* fills extra space */
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+button {
+  background-color: rgba(42, 45, 109, 0.7); /* semi-transparent */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, backdrop-filter 0.3s;
+  backdrop-filter: blur(3px); /* optional: blur background behind button */
+}
+
+button:hover {
+  background-color: rgba(42, 45, 109, 0.7); /* slightly more opaque on hover */
+}
+
+  </style>
 </head>
+
 <body>
-  <!-- Slideshow -->
-  <div class="container">
-    <div class="slideshow">
-      <img id="slideImage" src="images/IMG24.webp" alt="Slideshow" />
-    </div>
 
-    <!-- Controls for YouTube Music -->
-    <div class="controls">
-      <button id="playMusic">▶ Play Music</button>
-      <button id="pauseMusic">⏸ Pause Music</button>
-    </div>
+  <h1></h1>
+  <div class="slideshow-container">
+    <img src="images/Sunset.webp" class="slide active">
+    <img src="images/Shell.webp" class="slide">
+    <img src="images/lighthouse.webp" class="slide">
+    <img src="images/dreamscape.webp" class="slide">
+    <img src="https://stockcake.com/i/mermaid-fantasy-art_1024578_1099627" class="slide">
+
   </div>
 
-  <!-- Hidden YouTube IFrame -->
-  <div class="youtube-player">
-    <div id="ytPlayer"></div>
+  <div class="controls">
+    <button id="prevBtn">⟵ Prev</button>
+    <button id="nextBtn">Next ⟶</button>
   </div>
 
-  <!-- YouTube API and your script -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script src="script/music.js"></script>
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentIndex = 0;
+    let timer = setInterval(showNextSlide, 300000); // 5 minutes
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+    }
+
+    function showNextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    function showPrevSlide() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    nextBtn.addEventListener('click', () => {
+      showNextSlide();
+      resetTimer();
+    });
+
+    prevBtn.addEventListener('click', () => {
+      showPrevSlide();
+      resetTimer();
+    });
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(showNextSlide, 300000);
+    }
+  </script>
+
 </body>
+
 </html>
-
-
