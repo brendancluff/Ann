@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monkey Tamagotchi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0e68c;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    #monkey {
+      width: 60%;
+      max-width: 250px; /* never get too big */
+      height: auto;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .stats {
+      margin: 20px auto;
+      max-width: 400px;
+      text-align: left;
+    }
+
+    .bar {
+      height: 20px;
+      width: 100%;
+      background: #ddd;
+      margin: 5px 0 15px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: green;
+      width: 100%;
+      transition: width 0.3s;
+    }
+
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1 1 100px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffcc00;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #ffb300;
+    }
+
+    /* 📱 Small screens */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      #monkey {
+        width: 80%;
+        max-width: 180px;
+      }
+
+      button {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+      }
+
+      .stats {
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🐒 Monkey Tamagotchi</h1>
+  
+  <!-- Monkey GIF -->
+  <img id="monkey" src="gif/standard.gif" alt="Monkey">
+
+  <div class="stats">
+    <p>Hunger</p>
+    <div class="bar"><div id="hunger" class="fill"></div></div>
+    <p>Happiness</p>
+    <div class="bar"><div id="happiness" class="fill"></div></div>
+    <p>Energy</p>
+    <div class="bar"><div id="energy" class="fill"></div></div>
+  </div>
+
+  <div class="button-container">
+    <button onclick="feed()">🍌 Feed</button>
+    <button onclick="play()">🎾 Play</button>
+    <button onclick="sleep()">💤 Sleep</button>
+  </div>
+
+  <script>
+    let hunger = 100;
+    let happiness = 100;
+    let energy = 100;
+
+    const monkey = document.getElementById("monkey");
+
+    function updateBars() {
+      document.getElementById('hunger').style.width = hunger + "%";
+      document.getElementById('happiness').style.width = happiness + "%";
+      document.getElementById('energy').style.width = energy + "%";
+    }
+
+    function setMonkeyGif(gif, duration=2000) {
+      monkey.src = "gif/" + gif;
+      setTimeout(() => {
+        monkey.src = "gif/standard.gif";
+      }, duration);
+    }
+
+    function feed() {
+      hunger = Math.min(hunger + 20, 100);
+      setMonkeyGif("eating.gif");
+      updateBars();
+    }
+
+    function play() {
+      happiness = Math.min(happiness + 20, 100);
+      energy = Math.max(energy - 10, 0);
+      setMonkeyGif("playing.gif");
+      updateBars();
+    }
+
+    function sleep() {
+      energy = Math.min(energy + 30, 100);
+      hunger = Math.max(hunger - 10, 0);
+      setMonkeyGif("sleeping.gif", 4000);
+      updateBars();
+    }
+
+    function tick() {
+      hunger = Math.max(hunger - 2, 0);
+      happiness = Math.max(happiness - 1, 0);
+      energy = Math.max(energy - 1, 0);
+      updateBars();
+    }
+
+    setInterval(tick, 2000);
+    updateBars();
+  </script>
+</body>
+</html>
+

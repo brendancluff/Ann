@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weapon Number Generator</title>
+  <style>
+    body {
+      font-family: 'Cinzel', serif;
+      text-align: center;
+      background: radial-gradient(circle at center, #222, #000);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px black;
+    }
+
+    .weapon-container {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    svg {
+      display: none;
+    }
+
+    svg.active {
+      display: block;
+    }
+
+    /* Swing animation */
+    .weapon {
+      transform-origin: center top;
+      transition: transform 0.3s ease;
+    }
+
+    .swing {
+      animation: swingAnim 0.6s ease;
+    }
+
+    @keyframes swingAnim {
+      0%   { transform: rotate(0deg); }
+      25%  { transform: rotate(-20deg); }
+      50%  { transform: rotate(15deg); }
+      75%  { transform: rotate(-10deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    button {
+      background: crimson;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: darkred;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>Weapon Number Generator</h1>
+
+  <div class="weapon-container">
+    <!-- Sword -->
+    <svg id="sword" class="weapon" width="150" height="400" viewBox="0 0 150 400">
+      <defs>
+        <linearGradient id="bladeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#e6e6e6; stop-opacity:1"/>
+          <stop offset="100%" style="stop-color:#999; stop-opacity:1"/>
+        </linearGradient>
+      </defs>
+      <polygon points="75,10 95,300 55,300" fill="url(#bladeGradient)" stroke="#ccc" stroke-width="2"/>
+      <rect x="35" y="300" width="80" height="15" fill="gold" stroke="#996" stroke-width="3"/>
+      <rect x="65" y="315" width="20" height="60" fill="saddlebrown" stroke="#442" stroke-width="2"/>
+      <circle cx="75" cy="380" r="15" fill="gold" stroke="#996" stroke-width="3"/>
+      <text id="sword-number" x="75" y="180" text-anchor="middle" fill="black" font-size="40" font-weight="bold" stroke="white" stroke-width="2">?</text>
+    </svg>
+
+    <!-- Axe -->
+    <svg id="axe" class="weapon" width="200" height="400" viewBox="0 0 200 400">
+      <rect x="95" y="50" width="10" height="300" fill="saddlebrown" stroke="#442" stroke-width="2"/>
+      <ellipse cx="100" cy="100" rx="70" ry="50" fill="silver" stroke="#999" stroke-width="3"/>
+      <text id="axe-number" x="100" y="110" text-anchor="middle" fill="black" font-size="40" font-weight="bold" stroke="white" stroke-width="2">?</text>
+    </svg>
+
+    <!-- Dagger -->
+    <svg id="dagger" class="weapon" width="120" height="300" viewBox="0 0 120 300">
+      <polygon points="60,10 80,150 40,150" fill="url(#bladeGradient)" stroke="#ccc" stroke-width="2"/>
+      <rect x="20" y="150" width="80" height="10" fill="gold" stroke="#996" stroke-width="2"/>
+      <rect x="50" y="160" width="20" height="60" fill="saddlebrown" stroke="#442" stroke-width="2"/>
+      <circle cx="60" cy="230" r="10" fill="gold" stroke="#996" stroke-width="2"/>
+      <text id="dagger-number" x="60" y="100" text-anchor="middle" fill="black" font-size="30" font-weight="bold" stroke="white" stroke-width="2">?</text>
+    </svg>
+  </div>
+
+  <button id="roll-btn">Roll Number</button>
+
+  <script>
+    const rollBtn = document.getElementById("roll-btn");
+    const weapons = ["sword", "axe", "dagger"];
+
+    rollBtn.addEventListener("click", () => {
+      const randomNumber = Math.floor(Math.random() * 20) + 1;
+      const randomWeapon = weapons[Math.floor(Math.random() * weapons.length)];
+
+      // Hide all weapons first
+      weapons.forEach(w => document.getElementById(w).classList.remove("active", "swing"));
+
+      // Show chosen weapon
+      const weaponEl = document.getElementById(randomWeapon);
+      weaponEl.classList.add("active");
+
+      // Update number
+      const numText = document.getElementById(`${randomWeapon}-number`);
+      numText.textContent = randomNumber;
+
+      // Glow effect
+      numText.setAttribute("fill", "red");
+      setTimeout(() => numText.setAttribute("fill", "black"), 400);
+
+      // Swing animation
+      void weaponEl.offsetWidth; // restart animation
+      weaponEl.classList.add("swing");
+    });
+  </script>
+</body>
+</html>
