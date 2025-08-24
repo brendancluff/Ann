@@ -110,18 +110,20 @@
     </footer>
 
     <script>
-        function openMaps(service) {
-            const address = encodeURIComponent("Arizona"); // Replace with full address later
-            let url = "";
+  // Open Maps links
+function openMaps(service) {
+    const address = encodeURIComponent("977 E Broadway Rd, Mesa, AZ 85204");
+    let url = "";
 
-            if (service === "google") {
-                url = `https://www.google.com/maps?q=${address}`;
-            } else if (service === "apple") {
-                url = `http://maps.apple.com/?q=${address}`;
-            }
+    if (service === "google") {
+        url = `https://www.google.com/maps?q=${address}`;
+    } else if (service === "apple") {
+        url = `http://maps.apple.com/?q=${address}`;
+    }
 
-            window.open(url, "_blank");
-        }
+    window.open(url, "_blank");
+}
+
     </script>
 </body>
 
