@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brush, Feed & Sleep the Animal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 1rem;
+            transition: background 1s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+            margin-bottom: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            padding: 10px 16px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background: #4caf50;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #43a047;
+        }
+
+        #animal {
+            max-width: 90vw;
+            width: 300px;
+            height: auto;
+            border: 3px solid #333;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Brush mode cursor */
+        .brush-cursor {
+            cursor: url('https://cdn-icons-png.flaticon.com/512/616/616408.png') 16 16, auto;
+        }
+
+        .brushed {
+            animation: glow 0.4s ease;
+        }
+
+        @keyframes glow {
+            0% {
+                filter: brightness(1);
+            }
+
+            50% {
+                filter: brightness(1.5);
+            }
+
+            100% {
+                filter: brightness(1);
+            }
+        }
+
+        /* Banana */
+        .banana {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            cursor: grab;
+            touch-action: none;
+            /* Important for mobile drag */
+        }
+
+        /* Happy bounce */
+        .happy {
+            animation: happyJump 0.6s ease;
+        }
+
+        @keyframes happyJump {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10%);
+            }
+        }
+
+        /* Night mode */
+        .night {
+            background: #1a1a2e;
+            color: #eee;
+        }
+
+        .zzz {
+            position: absolute;
+            font-size: clamp(1rem, 4vw, 2rem);
+            color: #fff;
+            opacity: 0;
+            animation: floatZzz 3s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatZzz {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.8);
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        .animal-container {
+            position: relative;
+            display: inline-block;
+            max-width: 90vw;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Brush, Feed & Sleep the Animal 🐵</h1>
+    <div class="controls">
+        <button id="brushBtn">Activate Brush</button>
+        <button id="bananaBtn">Get Banana 🍌</button>
+        <button id="sleepBtn">Put to Sleep</button>
+    </div>
+    <div class="animal-container">
+        <img id="animal" src="gif/standard.gif" alt="Monkey">
+    </div>
+
+    <script>
+        const brushBtn = document.getElementById('brushBtn');
+        const bananaBtn = document.getElementById('bananaBtn');
+        const sleepBtn = document.getElementById('sleepBtn');
+        const animal = document.getElementById('animal');
+        const container = document.querySelector('.animal-container');
+        let brushMode = false;
+        let sleeping = false;
+        let zzzInterval;
+
+        // Images
+        const normalImg = "gif/standard.gif";
+        const happyImg = "gif/happy.gif";
+        const sleepImg = "gif/sleep.gif";
+
+
+        // Toggle brush mode
+        brushBtn.addEventListener('click', () => {
+            brushMode = !brushMode;
+            document.body.classList.toggle('brush-cursor', brushMode);
+            brushBtn.textContent = brushMode ? "Deactivate Brush" : "Activate Brush";
+        });
+
+        // Brushing effect (mouse + touch)
+        function brushEffect() {
+            if (brushMode && !sleeping) {
+                animal.classList.add('brushed');
+                setTimeout(() => animal.classList.remove('brushed'), 400);
+            }
+        }
+        animal.addEventListener('mousemove', brushEffect);
+        animal.addEventListener('touchmove', brushEffect);
+
+        // Add banana to screen for dragging
+        bananaBtn.addEventListener('click', () => {
+            if (sleeping) return;
+            const banana = document.createElement('img');
+            banana.src = "https://cdn-icons-png.flaticon.com/512/415/415733.png";
+            banana.classList.add('banana');
+            container.appendChild(banana);
+
+            // Start in center bottom
+            banana.style.left = "50%";
+            banana.style.top = "80%";
+            banana.style.transform = "translate(-50%, 0)";
+
+            makeDraggable(banana);
+        });
+
+        // Make banana draggable (works with mouse + touch)
+        function makeDraggable(el) {
+            let offsetX = 0, offsetY = 0, dragging = false;
+
+            function onStart(e) {
+                dragging = true;
+                el.style.cursor = "grabbing";
+                if (e.type === "touchstart") {
+                    offsetX = e.touches[0].clientX - el.getBoundingClientRect().left;
+                    offsetY = e.touches[0].clientY - el.getBoundingClientRect().top;
+                } else {
+                    offsetX = e.clientX - el.getBoundingClientRect().left;
+                    offsetY = e.clientY - el.getBoundingClientRect().top;
+                }
+            }
+
+            function onMove(e) {
+                if (!dragging) return;
+                e.preventDefault();
+                let x, y;
+                if (e.type.startsWith("touch")) {
+                    x = e.touches[0].clientX;
+                    y = e.touches[0].clientY;
+                } else {
+                    x = e.clientX;
+                    y = e.clientY;
+                }
+                el.style.left = (x - offsetX - container.getBoundingClientRect().left) + "px";
+                el.style.top = (y - offsetY - container.getBoundingClientRect().top) + "px";
+            }
+
+            function onEnd() {
+                dragging = false;
+                el.style.cursor = "grab";
+
+                // Collision check with animal
+                const bananaRect = el.getBoundingClientRect();
+                const animalRect = animal.getBoundingClientRect();
+                if (!(bananaRect.right < animalRect.left ||
+                    bananaRect.left > animalRect.right ||
+                    bananaRect.bottom < animalRect.top ||
+                    bananaRect.top > animalRect.bottom)) {
+                    feedAnimal(el);
+                }
+            }
+
+            el.addEventListener("mousedown", onStart);
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onEnd);
+
+            el.addEventListener("touchstart", onStart);
+            document.addEventListener("touchmove", onMove, { passive: false });
+            document.addEventListener("touchend", onEnd);
+        }
+
+        function feedAnimal(banana) {
+            banana.remove();
+            animal.classList.add('happy');
+            animal.src = happyImg;
+
+            setTimeout(() => {
+                if (!sleeping) {
+                    animal.src = normalImg;
+                }
+                animal.classList.remove('happy');
+            }, 2000);
+        }
+
+        // Sleep toggle
+        sleepBtn.addEventListener('click', () => {
+            sleeping = !sleeping;
+            if (sleeping) {
+                animal.src = sleepImg;
+                document.body.classList.add('night');
+                sleepBtn.textContent = "Wake Up";
+
+                zzzInterval = setInterval(() => {
+                    const zzz = document.createElement('div');
+                    zzz.textContent = "Zzz";
+                    zzz.classList.add('zzz');
+                    zzz.style.left = "70%";
+                    zzz.style.top = "10%";
+                    container.appendChild(zzz);
+                    setTimeout(() => zzz.remove(), 3000);
+                }, 1500);
+
+            } else {
+                animal.src = normalImg;
+                document.body.classList.remove('night');
+                sleepBtn.textContent = "Put to Sleep";
+                clearInterval(zzzInterval);
+            }
+        });
+    </script>
+</body>
+
+</html>

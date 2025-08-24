@@ -33,19 +33,22 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      background: black;
     }
 
     .slide {
-      display: none;
-      width: 100%;
-      height: auto;  /* maintains full image height */
-      max-height: 85vh;  /* ensures it doesn’t exceed viewport */
-      object-fit: contain; /* shows full image without cropping */
-      background-color: #111;  /* fills extra space */
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      position: absolute;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     .slide.active {
       display: block;
+      opacity: 1;
+      position: relative;
     }
 
     .controls {
@@ -53,24 +56,24 @@
       justify-content: center;
       gap: 15px;
       margin-top: 15px;
+      transition: opacity 0.5s;
     }
 
-button {
-  background-color: rgba(42, 45, 109, 0.7); /* semi-transparent */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, backdrop-filter 0.3s;
-  backdrop-filter: blur(3px); /* optional: blur background behind button */
-}
+    button {
+      background-color: rgba(42, 45, 109, 0.7);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, backdrop-filter 0.3s;
+      backdrop-filter: blur(3px);
+    }
 
-button:hover {
-  background-color: rgba(42, 45, 109, 0.7); /* slightly more opaque on hover */
-}
-
+    button:hover {
+      background-color: rgba(42, 45, 109, 0.9);
+    }
   </style>
 </head>
 
@@ -78,23 +81,25 @@ button:hover {
 
   <h1></h1>
   <div class="slideshow-container">
-    <img src="images/Sunset.webp" class="slide active">
-    <img src="images/Shell.webp" class="slide">
-    <img src="images/lighthouse.webp" class="slide">
-    <img src="images/dreamscape.webp" class="slide">
-    <img src="https://stockcake.com/i/mermaid-fantasy-art_1024578_1099627" class="slide">
-
+    <img src="images/Sunset.webp" class="slide active" alt="Sunset over ocean">
+    <img src="images/Shell.webp" class="slide" alt="Shell on beach">
+    <img src="images/lighthouse.webp" class="slide" alt="Lighthouse by the sea">
+    <img src="images/dreamscape.webp" class="slide" alt="Fantasy dreamscape">
   </div>
 
   <div class="controls">
     <button id="prevBtn">⟵ Prev</button>
     <button id="nextBtn">Next ⟶</button>
+    <button id="fullscreenBtn">⛶ Fullscreen</button>
   </div>
 
   <script>
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const slideshowContainer = document.querySelector('.slideshow-container');
+    const controls = document.querySelector('.controls');
 
     let currentIndex = 0;
     let timer = setInterval(showNextSlide, 300000); // 5 minutes
@@ -125,6 +130,75 @@ button:hover {
       resetTimer();
     });
 
+    // Fullscreen toggle
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        slideshowContainer.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+
+    // Hide controls in fullscreen, show on move/tap
+    document.addEventListener("fullscreenchange", () => {
+      if (document.fullscreenElement) {
+        controls.style.opacity = "0";
+        let hideTimeout;
+        document.onmousemove = () => {
+          controls.style.opacity = "1";
+          clearTimeout(hideTimeout);
+          hideTimeout = setTimeout(() => controls.style.opacity = "0", 2000);
+        };
+        document.ontouchstart = () => {
+          controls.style.opacity = "1";
+          clearTimeout(hideTimeout);
+          hideTimeout = setTimeout(() => controls.style.opacity = "0", 2000);
+        };
+      } else {
+        controls.style.opacity = "1";
+        document.onmousemove = null;
+        document.ontouchstart = null;
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+        if (e.key === 'ArrowRight') showNextSlide();
+        if (e.key === 'ArrowLeft') showPrevSlide();
+        if (e.key === 'Home') { currentIndex = 0; showSlide(currentIndex); }
+        if (e.key === 'End') { currentIndex = slides.length - 1; showSlide(currentIndex); }
+        resetTimer();
+      }
+    });
+
+    // Touch swipe (mobile/tablet)
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    slideshowContainer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    slideshowContainer.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      if (touchEndX < touchStartX - 50) { // swipe left
+        showNextSlide();
+        resetTimer();
+      }
+      if (touchEndX > touchStartX + 50) { // swipe right
+        showPrevSlide();
+        resetTimer();
+      }
+    }
+
     function resetTimer() {
       clearInterval(timer);
       timer = setInterval(showNextSlide, 300000);
@@ -132,5 +206,4 @@ button:hover {
   </script>
 
 </body>
-
 </html>
