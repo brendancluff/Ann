@@ -7,6 +7,28 @@
     <title>In Loving Memory of Mallie Ann Cluff</title>
     <link rel="stylesheet" href="style/obituary.css">
     <script src="script/obituary.js" defer></script>
+    <style>
+        /* Extra styles just for the map buttons */
+        .map-links {
+            margin-top: 10px;
+        }
+
+        .map-btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 14px;
+            background: #0073e6;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .map-btn:hover {
+            background: #005bb5;
+        }
+    </style>
 </head>
 
 <body>
@@ -37,9 +59,21 @@
         <!-- Funeral Details -->
         <section class="funeral-details">
             <h3>Memorial Service</h3>
-            <p><strong>Date:</strong> Details To Come</p>
+            <p><strong>Date:</strong> September 13, 2025</p>
             <p><strong>Time:</strong> Details To Come</p>
-            <p><strong>Location:</strong> Arizona</p>
+            <p><strong>Location:</strong></p>
+            <address class="funeral-address">
+                977 E Broadway Rd<br>
+                Mesa, AZ 85204<br>
+                Southwest Corner of Broadway and Solomon<br>
+                The Church of Jesus Christ of Latter-day Saints Building
+            </address>
+
+            <!-- Address Links -->
+            <div class="map-links">
+                <a href="#" class="map-btn" onclick="openMaps('google')">Open in Google Maps</a>
+                <a href="#" class="map-btn" onclick="openMaps('apple')">Open in Apple Maps</a>
+            </div>
         </section>
 
         <!-- Slideshow -->
@@ -75,6 +109,20 @@
         <p>&copy; 2025 The Cluff Family</p>
     </footer>
 
+    <script>
+        function openMaps(service) {
+            const address = encodeURIComponent("Arizona"); // Replace with full address later
+            let url = "";
+
+            if (service === "google") {
+                url = `https://www.google.com/maps?q=${address}`;
+            } else if (service === "apple") {
+                url = `http://maps.apple.com/?q=${address}`;
+            }
+
+            window.open(url, "_blank");
+        }
+    </script>
 </body>
 
 </html>
