@@ -1,0 +1,187 @@
+:root {
+  --bg: #ffd6e3;
+  --bg2: #ffc3d6;
+  --text: #d1004b;
+  --yes: #e6005a;
+  --yes-dark: #c8004e;
+  --no-border: rgba(209, 0, 75, 0.35);
+  --card: rgba(255, 255, 255, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at top, var(--bg2), var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.app {
+  width: min(420px, 100%);
+  position: relative;
+}
+
+.screen {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 28px;
+  padding: 28px 22px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.screen--active {
+  display: block;
+}
+
+.hearts-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+  user-select: none;
+}
+
+.title {
+  font-size: clamp(28px, 4.6vw, 38px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 10px 0 20px;
+  font-weight: 800;
+}
+
+.spark {
+  display: inline-block;
+  transform: translateY(3px);
+}
+
+.buttons {
+  position: relative;
+  min-height: 140px;
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.btn {
+  border: 0;
+  cursor: pointer;
+  font-weight: 800;
+  border-radius: 16px;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  user-select: none;
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.btn--yes {
+  width: min(260px, 90%);
+  height: 64px;
+  font-size: 20px;
+  color: white;
+  background: linear-gradient(180deg, var(--yes), var(--yes-dark));
+  box-shadow: 0 10px 20px rgba(230, 0, 90, 0.28);
+}
+
+.btn--yes:hover {
+  transform: translateY(-1px);
+}
+
+.btn--no {
+  width: 110px;
+  height: 44px;
+  font-size: 16px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid var(--no-border);
+  position: absolute; /* we move it around */
+  left: 50%;
+  top: 92px;
+  transform: translateX(-50%);
+}
+
+.hint {
+  margin: 14px 0 0;
+  font-size: 14px;
+  opacity: 0.75;
+}
+
+.big-heart {
+  font-size: 84px;
+  margin-top: 6px;
+  animation: pop 900ms ease-in-out infinite;
+}
+
+@keyframes pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.yay {
+  margin: 10px 0 6px;
+  font-size: 42px;
+  font-weight: 900;
+}
+
+.sub {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.love {
+  margin: 10px 0 16px;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(209, 0, 75, 0.2);
+  color: var(--text);
+  width: 140px;
+  height: 46px;
+  font-size: 16px;
+}
+
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti span {
+  position: absolute;
+  top: -20px;
+  font-size: 18px;
+  opacity: 0.9;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(520px) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .big-heart,
+  .confetti span {
+    animation: none;
+  }
+}
