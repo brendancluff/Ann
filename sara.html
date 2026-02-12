@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A Valentine page for Sara">
+  <title>Sara, will you be my Valentine?</title>
+
+  <style>
+    :root {
+      --bg: #ffd6e3;
+      --bg2: #ffc3d6;
+      --text: #d1004b;
+      --yes: #e6005a;
+      --yes-dark: #c8004e;
+      --no-border: rgba(209, 0, 75, 0.35);
+      --card: rgba(255, 255, 255, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: min(420px, 100%);
+      position: relative;
+    }
+
+    .screen {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 28px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hearts-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0.9;
+      margin-bottom: 16px;
+      user-select: none;
+    }
+
+    .title {
+      font-size: clamp(28px, 4.6vw, 38px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 10px 0 20px;
+      font-weight: 800;
+    }
+
+    .spark { display: inline-block; transform: translateY(3px); }
+
+    /* ✅ PLAY AREA: reserves space for YES, NO moves below */
+    .buttons {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      padding-top: 80px;       /* reserved space for YES */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+      border-radius: 16px;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ✅ Don't override centering transforms */
+    .btn:active {
+      filter: brightness(0.98);
+    }
+
+    .btn--yes {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: min(260px, 90%);
+      height: 64px;
+      font-size: 20px;
+      color: white;
+      background: linear-gradient(180deg, var(--yes), var(--yes-dark));
+      box-shadow: 0 10px 20px rgba(230, 0, 90, 0.28);
+    }
+
+    .btn--yes:hover {
+      transform: translateX(-50%) translateY(-1px);
+    }
+
+    .btn--no {
+      width: 110px;
+      height: 44px;
+      font-size: 16px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.6);
+      border: 2px solid var(--no-border);
+
+      position: absolute;
+      left: 50%;
+      top: 120px;              /* always below YES zone */
+      transform: translateX(-50%);
+      touch-action: manipulation;
+    }
+
+    .hint {
+      margin: 14px 0 0;
+      font-size: 14px;
+      opacity: 0.75;
+    }
+
+    .big-heart {
+      font-size: 84px;
+      margin-top: 6px;
+      animation: pop 900ms ease-in-out infinite;
+      user-select: none;
+    }
+
+    @keyframes pop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .yay {
+      margin: 10px 0 6px;
+      font-size: 42px;
+      font-weight: 900;
+    }
+
+    .sub {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .love {
+      margin: 10px 0 16px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .btn--ghost {
+      background: rgba(255, 255, 255, 0.55);
+      border: 2px solid rgba(209, 0, 75, 0.2);
+      color: var(--text);
+      width: 140px;
+      height: 46px;
+      font-size: 16px;
+    }
+
+    .confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti span {
+      position: absolute;
+      top: -20px;
+      font-size: 18px;
+      opacity: 0.95;
+      animation: fall linear forwards;
+      user-select: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(520px) rotate(360deg);
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .big-heart,
+      .confetti span {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app" aria-live="polite">
+    <!-- Screen 1 -->
+    <section id="screen-ask" class="screen">
+      <div class="hearts-row" aria-hidden="true">
+        <span>💗</span><span>💗</span><span>💗</span><span>💗</span><span>💗</span>
+        <span>💗</span><span>💗</span><span>💗</span><span>💗</span>
+      </div>
+
+      <h1 class="title">
+        Sara, will you<br>
+        be my<br>
+        Valentine? <span class="spark" aria-hidden="true">💞</span>
+      </h1>
+
+      <div class="buttons" id="playArea">
+        <button id="yesBtn" class="btn btn--yes" type="button">
+          Yes! <span aria-hidden="true">✨</span>
+        </button>
+
+        <button id="noBtn" class="btn btn--no" type="button" aria-label="No (this button moves)">
+          No
+        </button>
+      </div>
+
+      <p class="hint">Tip: Try pressing “No” 😉</p>
+    </section>
+
+    <!-- Screen 2 -->
+    <section id="screen-yay" class="screen" hidden>
+      <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+      <div class="big-heart" aria-hidden="true">❤️</div>
+
+      <h2 class="yay">YAY! <span aria-hidden="true">🎉</span></h2>
+      <p class="sub">Best decision ever!</p>
+      <p class="love">I LOVE YOU!! <span aria-hidden="true">😘</span></p>
+
+      <button id="backBtn" class="btn btn--ghost" type="button">Back</button>
+    </section>
+  </main>
+
+  <script>
+    const yesBtn = document.querySelector("#yesBtn");
+    const noBtn = document.querySelector("#noBtn");
+    const backBtn = document.querySelector("#backBtn");
+
+    const screenAsk = document.querySelector("#screen-ask");
+    const screenYay = document.querySelector("#screen-yay");
+
+    const confetti = document.querySelector("#confetti");
+    const playArea = document.querySelector("#playArea");
+
+    function showYay() {
+      screenAsk.hidden = true;
+      screenYay.hidden = false;
+
+      confetti.innerHTML = "";
+      const pieces = 36;
+      const emojis = ["💗", "💖", "💕", "💞", "🎉"];
+
+      for (let i = 0; i < pieces; i++) {
+        const s = document.createElement("span");
+        s.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+        const left = Math.random() * 100;
+        const duration = 1.8 + Math.random() * 1.8;
+        const delay = Math.random() * 0.25;
+
+        s.style.left = left + "%";
+        s.style.animationDuration = duration + "s";
+        s.style.animationDelay = delay + "s";
+
+        confetti.appendChild(s);
+        setTimeout(() => s.remove(), (duration + delay) * 1000);
+      }
+    }
+
+    function showAsk() {
+      screenYay.hidden = true;
+      screenAsk.hidden = false;
+    }
+
+    function moveNoButton() {
+      const area = playArea.getBoundingClientRect();
+      const btn = noBtn.getBoundingClientRect();
+
+      const padding = 10;
+      const safeTop = 110; // keep below YES zone
+
+      const maxX = area.width - btn.width - padding;
+      const maxY = area.height - btn.height - padding;
+
+      let x = Math.random() * maxX + padding / 2;
+      let y = Math.random() * (maxY - safeTop) + safeTop;
+
+      x = Math.max(padding / 2, Math.min(x, maxX));
+      y = Math.max(safeTop, Math.min(y, maxY));
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = "none";
+    }
+
+    yesBtn.addEventListener("click", showYay);
+    backBtn.addEventListener("click", showAsk);
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("focus", moveNoButton);
+
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    window.addEventListener("load", () => {
+      setTimeout(moveNoButton, 150);
+    });
+  </script>
+</body>
+</html>
